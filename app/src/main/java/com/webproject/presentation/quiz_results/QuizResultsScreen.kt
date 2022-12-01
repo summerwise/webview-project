@@ -47,7 +47,7 @@ fun QuizResultScreen(
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        text = "${state.rightAnswersCount} верных ответов из ${state.questionsCount}",
+                        text = "${state.rightAnswersCount} correct answers out of ${state.questionsCount}",
                     )
                     Text(
                         text = state.successTextVariant.asString(),

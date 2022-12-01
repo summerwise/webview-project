@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">Web Project</string>
-    <string name="show_help_button_text">Подсказка</string>
-    <string name="hide_help_button_text">Скрыть</string>
-    <string name="refresh_page_button_text">Повторить попытку</string>
-    <string name="help_title">Подсказка:</string>
-    <string name="next_question_button_text">Следующий вопрос</string>
-    <string name="quiz_results_button">Результаты</string>
-    <string name="no_internet_connection_text">Ошибка загрузки. Проверьте подключение к сети и повторите попытку</string>
-    <string name="success_low_variant_text">Вы кое-что знаете о спорте!</string>
-    <string name="success_medium_variant_text">Вы неплохо разбираетесь в спорте!</string>
-    <string name="success_high_variant_text">Вы отлично разбираетесь в спорте!</string>
-    <string name="quiz_result_title_text">Ваш результат</string>
-    <string name="repeat_quiz_button_text">Пройти ещё раз</string>
+    <string name="show_help_button_text">Help</string>
+    <string name="hide_help_button_text">Hide</string>
+    <string name="refresh_page_button_text">Retry</string>
+    <string name="help_title">Help tip:</string>
+    <string name="next_question_button_text">Next question</string>
+    <string name="quiz_results_button">Results</string>
+    <string name="no_internet_connection_text">Loading error. Please check your network connection and try again</string>
+    <string name="success_low_variant_text">You know something about sports!</string>
+    <string name="success_medium_variant_text">You are good at sports!</string>
+    <string name="success_high_variant_text">You are great at sports!</string>
+    <string name="quiz_result_title_text">Your result</string>
+    <string name="repeat_quiz_button_text">Try one more time</string>
 </resources>
