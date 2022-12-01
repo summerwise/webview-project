@@ -11,4 +11,5 @@
     <string name="success_medium_variant_text">Вы неплохо разбираетесь в спорте!</string>
     <string name="success_high_variant_text">Вы отлично разбираетесь в спорте!</string>
     <string name="quiz_result_title_text">Ваш результат</string>
+    <string name="repeat_quiz_button_text">Пройти ещё раз</string>
 </resources>

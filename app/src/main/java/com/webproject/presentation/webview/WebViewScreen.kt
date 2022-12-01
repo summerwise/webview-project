@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 import com.webproject.R
@@ -21,7 +22,6 @@ import com.webproject.presentation.components.ErrorTextHandler
 @Composable
 fun WebViewScreen(
     url: String,
-    //viewModel: WebViewModel = hiltViewModel(),
 ) {
     val state = rememberWebViewState(url)
     BackHandler(

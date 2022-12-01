@@ -5,15 +5,16 @@ import android.content.Context.TELEPHONY_SERVICE
 import android.os.Build
 import android.os.Bundle
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,6 +25,7 @@ import androidx.navigation.navArgument
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.webproject.presentation.Constants
 import com.webproject.presentation.Screen
 import com.webproject.presentation.quiz.QuizScreen
@@ -40,13 +42,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val context = LocalContext.current
+            val isMock = checkIfMock(context)
             val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
-            //val url = mutableStateOf("")
-            //val url = mutableStateOf(remoteConfig.getString(Constants.PARAM_URL))
-            checkIfMock(LocalContext.current)
-            val url: MutableState<String?> = mutableStateOf(null)
-            remoteConfig.fetchAndActivate().addOnCompleteListener {
-                url.value = remoteConfig.getString(Constants.PARAM_URL)
+            val configSettings = remoteConfigSettings {
+                minimumFetchIntervalInSeconds = 5
+            }
+            remoteConfig.setConfigSettingsAsync(configSettings)
+            var url by remember { mutableStateOf<String?>(null) }
+            val savedUrl = remoteConfig.getString(Constants.PARAM_URL)
+            if(savedUrl.isNotEmpty())
+                url = savedUrl
+            else {
+                remoteConfig.fetchAndActivate()
+                    .addOnCompleteListener(this) { task ->
+                        url = remoteConfig.getString(Constants.PARAM_URL)
+                    }
             }
             WebProjectTheme {
                 val navController = rememberNavController()
@@ -54,17 +65,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    url.value?.let { Navigation(navController, it) }
+                    url?.let { Navigation(navController, it, isMock) }
                 }
             }
         }
     }
 }
 
-fun checkIfMock(context: Context) {
+fun checkIfMock(context: Context): Boolean {
     val isGoogleBrand = checkIfGoogleBrand()
     val isSimAvailable = isSimAvailable(context)
     val isEmulator = checkIsEmu()
+    return isGoogleBrand || !isSimAvailable || isEmulator
 }
 
 private fun checkIfGoogleBrand(): Boolean {
@@ -96,12 +108,9 @@ private fun capitalize(s: String?): String {
 }
 
 fun isSimAvailable(context: Context): Boolean {
-//    return TelephonyManager.SIM_STATE_ABSENT !=
-//            (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager).simState
     val telMgr = context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager
     var isAvailable = false
-    val simState = telMgr.simState
-    when (simState) {
+    when (telMgr.simState) {
         TelephonyManager.SIM_STATE_ABSENT -> {}
         TelephonyManager.SIM_STATE_NETWORK_LOCKED -> {}
         TelephonyManager.SIM_STATE_PIN_REQUIRED -> {}
@@ -144,11 +153,11 @@ private fun checkIsEmu(): Boolean {
 
 
 @Composable
-fun Navigation(navController: NavHostController, url: String)  {
+fun Navigation(navController: NavHostController, url: String, isMock: Boolean)  {
     NavHost(
         navController = navController,
         modifier = Modifier,
-        startDestination = if(url.isEmpty())
+        startDestination = if(url.isEmpty() || isMock)
             Screen.QuizScreen.route else
                 Screen.WebViewScreen.route
     ) {

@@ -7,7 +7,6 @@ import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -26,10 +24,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.webproject.R
 import com.webproject.presentation.Screen
 import com.webproject.presentation.components.ErrorTextHandler
+import com.webproject.ui.theme.right_answer_color
+import com.webproject.ui.theme.wrong_answer_color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +55,7 @@ fun QuizScreen(
                 ) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Image(
-                        modifier = Modifier.size(70.dp),
+                        modifier = Modifier.size(60.dp),
                         painter = painterResource(id = R.drawable.ic_trainer_avatar),
                         contentDescription = null,
                     )
@@ -80,6 +81,7 @@ fun QuizScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                             ) {
                                 GlideImage(
+                                    circularRevealedEnabled = true,
                                     imageModel = currentQuestion.imageUrl,
                                     modifier = Modifier
                                         .padding(horizontal = 0.dp)
@@ -89,6 +91,7 @@ fun QuizScreen(
                                     ,
                                     contentScale = ContentScale.FillBounds,
                                 )
+                                Spacer(modifier = Modifier.height(10.dp))
                                 Text(
                                     style = MaterialTheme.typography.titleSmall,
                                     text = currentQuestion.question,
@@ -149,18 +152,18 @@ fun QuizScreen(
                                 colors = if(currentAnswer == answer) {
                                     if(rightAnswer == answer)
                                         ButtonDefaults.elevatedButtonColors(
-                                            containerColor = Color.Green
+                                            containerColor = right_answer_color
                                         )
                                     else {
                                         ButtonDefaults.elevatedButtonColors(
-                                            containerColor = Color.Red
+                                            containerColor = wrong_answer_color
                                         )
                                     }
                                 }
                                 else if(!isButtonsEnabled){
                                     if (answer == rightAnswer)
                                         ButtonDefaults.elevatedButtonColors(
-                                            containerColor = Color.Green
+                                            containerColor = right_answer_color
                                         )
                                     else {
                                         ButtonDefaults.elevatedButtonColors()
@@ -191,7 +194,14 @@ fun QuizScreen(
                                         Screen.QuizResultsScreen.withArgs(
                                             state.rightAnswers.toString(),
                                             state.quizList.size.toString(),
-                                        )
+                                        ),
+                                        navOptions {
+                                            popUpTo(
+                                                route = Screen.QuizScreen.route,
+                                            ) {
+                                                inclusive = true
+                                            }
+                                        }
                                     )
                                 }
                                 else {

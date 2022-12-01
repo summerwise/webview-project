@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.webproject.R
 import com.webproject.presentation.Screen
 
@@ -58,11 +59,21 @@ fun QuizResultScreen(
                 modifier = Modifier
                     .padding(30.dp),
                 onClick = {
-                    navController.navigate(Screen.QuizScreen.route)
+                    val prevRoute = navController.currentDestination!!.route!!
+                    navController.navigate(
+                        Screen.QuizScreen.route,
+                        navOptions {
+                            popUpTo(
+                                route = prevRoute,
+                            ) {
+                                inclusive = true
+                            }
+                        }
+                    )
                 },
             ) {
                 Text(
-                    text = "Пройти ещё раз",
+                    text = stringResource(R.string.repeat_quiz_button_text),
                 )
             }
         }
