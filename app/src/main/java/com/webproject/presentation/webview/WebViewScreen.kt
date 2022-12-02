@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.webkit.CookieManager
 import android.webkit.WebSettings
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -42,6 +43,16 @@ fun WebViewScreen(
                     it.settings.javaScriptEnabled = true
                     it.settings.domStorageEnabled = true
                     it.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+                    it.settings.javaScriptCanOpenWindowsAutomatically = true
+                    it.settings.loadWithOverviewMode = true
+                    it.settings.useWideViewPort = true
+                    it.settings.databaseEnabled = true
+                    it.settings.setSupportZoom(false)
+                    it.settings.allowFileAccess = true
+                    it.settings.allowContentAccess = true
+
+                    val cookieManager = CookieManager.getInstance()
+                    cookieManager.setAcceptCookie(true)
                 }
             )
         }
